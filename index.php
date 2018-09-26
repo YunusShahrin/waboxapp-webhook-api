@@ -2,28 +2,29 @@
 $method = $_SERVER['REQUEST_METHOD'];
 // Process only when method is POST
 if($method == 'POST'){
-	$json = json_decode($_POST["data"]);
+	$requestBody = file_get_contents('php://input');
+	$json = json_decode($requestBody);
 
-	$event = $json->event;
-	$token = $json->token;
-	$uid = $json->uid;
-	$contactUid = $json->contact[uid];
-	$contactName = $json->contact[name];
-	$contactType = $json->contact[type];
-	$messageDtm = $json->message[dtm];
-	$messageUid = $json->message[uid];
-	$messageCuid = $json->message[cuid];
-	$messageDir = $json->message[dir];
-	$messageType = $json->comessage[type];
-	$messageBody = $json->message[body];
-	$ack = $json->ack;
+	$event = $json->result->parameters->event;
+	$token = $json->result->parameters->token;
+	$uid = $json->result->parameters->uid;
+	$contactUid = $json->result->parameters->contact[uid];
+	$contactName = $json->result->parameters->contact[name];
+	$contactType = $json->result->parameters->contact[type];
+	$messageDtm = $json->result->parameters->message[dtm];
+	$messageUid = $json->result->parameters->message[uid];
+	$messageCuid = $json->result->parameters->message[cuid];
+	$messageDir = $json->result->parameters->message[dir];
+	$messageType = $json->result->parameters->comessage[type];
+	$messageBody = $json->result->parameters->message[body];
+	$ack = $json->result->parameters->ack;
 	
 	if($event == "message") {
 		
-		$replyMsg = "From: " . $from . ", Msg: " . $text . ".";
+		$replyMsg = "Event: " . $event . ", Msg: " . $messageBody . ".";
 	}
 	else if($event == "ack") {
-		$replyMsg = "From: " . $from . ", To: " . $to . ", Status: Processed.";
+		$replyMsg = "Event: " . $event . ", Ack: " . $ack . ".";
 	}
 	else{
 		$replyMsg = "Parameter not complete";
